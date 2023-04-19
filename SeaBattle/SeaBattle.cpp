@@ -228,7 +228,7 @@ void render(char** field) {
         cout << endl;
     }
 }
-
+// Начальная расстановка кораблей.
 void startInit(char** field, char** enemyField, int* shipCount, int* enemyShipCount) {
     string isRand;
     cout << "Случайное заполнение? (Yes/No) ";
@@ -259,7 +259,111 @@ void startInit(char** field, char** enemyField, int* shipCount, int* enemyShipCo
         setRandomShips(enemyField, enemyShipCount);
     }
 }
+// Проверка на убийство.
+bool isKill(char** enemyField, char** hitField, int x, int y) {
+    int decks = 1;
+    int minX = x;
+    int minY = y;
+    bool check = false;
+    bool isKill = true;
+    for (int x0 = x + 1; x0 <= x + 3; x0++) {
+        if (x0 < 0 || x0 >= FIELD_SIZE) continue;
+        if (enemyField[y][x0] == shipTest || enemyField[y][x0] == 'x') {
+            decks++;
+            
+        }
+        else {
+            cout << "справа нет палуб" << endl;
+            break;
+            
+        }
+    }
+    for (int x0 = x - 1; x0 >= x - 3; x0--) {
+        if (x0 < 0 || x0 >= FIELD_SIZE) continue;
+        if (enemyField[y][x0] == shipTest || enemyField[y][x0] == 'x') {
+            decks++;
+            if (minX > x0) minX = x0;
+        }
+        else {
+            cout << "слева нет палуб" << endl;
+            
+            break;
+        }
+    }
+    if (decks == 1) check = true;
 
+    if (check == true) {
+        for (int y0 = y + 1; y0 <= y + 3; y0++) {
+            if (y0 < 0 || y0 >= FIELD_SIZE) continue;
+            if (enemyField[y0][x] == shipTest || enemyField[y0][x] == 'x') {
+                decks++;
+            }
+            else {
+                break;
+            }
+        }
+        for (int y0 = y - 1; y0 >= y - 3; y0--) {
+            if (y0 < 0 || y0 >= FIELD_SIZE) continue;
+            if (enemyField[y0][x] == shipTest || enemyField[y0][x] == 'x') {
+                decks++;
+                if (minY > y0) minY = y0;
+            }
+            else {
+                break;
+                
+            }
+        }
+    }
+    cout << "CHECK(X - 0 / Y - 1)" << check << endl;
+    cout << "DECKS - " << decks << endl;
+    cout << "minX - " << minX << endl;
+    if (check == false) {
+        for (int x0 = minX; x0 <= minX + decks - 1; x0++) {
+            if (enemyField[y][x0] != 'x') {
+                isKill = false;
+                break;
+            }
+        }
+        if (isKill) {
+            for (int y0 = y - 1; y0 <= y + 1; y0++) {
+                for (int x0 = minX - 1; x0 <= minX + decks; x0++) {
+                    if (y0 < 0 || x0 < 0 || y0 >= FIELD_SIZE || x0 >= FIELD_SIZE) continue;
+
+                    if (enemyField[y0][x0] != 'x') {
+                        enemyField[y0][x0] = 'o';
+                        hitField[y0][x0] = 'o';
+                    }
+                }
+            }
+            return true;
+        }
+        else return false;
+    }
+    else {
+        for (int y0 = minY; y0 <= minY + decks - 1; y0++) {
+            if (enemyField[y0][x] != 'x') {
+                isKill = false;
+                break; 
+            }
+        }
+        if (isKill) {
+            for (int y0 = minY - 1; y0 <= minY + decks; y0++) {
+                for (int x0 = minX - 1; x0 <= minX + 1; x0++) {
+                    if (y0 < 0 || x0 < 0 || y0 >= FIELD_SIZE || x0 >= FIELD_SIZE) continue;
+                    if (enemyField[y0][x0] != 'x') {
+                        enemyField[y0][x0] = 'o';
+                        hitField[y0][x0] = 'o';
+                    }
+                }
+            }
+            return true;
+        }
+        else return false;
+        
+    }
+}
+
+// Проверка попадания. Убил, ранил, промазал.
 void myTurn(char** enemyField, char** hitField) {
     int x, y;
     char let;
@@ -270,35 +374,52 @@ void myTurn(char** enemyField, char** hitField) {
     if (enemyField[y][x] == '~') {
         enemyField[y][x] = 'o';
         hitField[y][x] = 'o';
+        cout << "Промах" << endl;
     }
-    else if(enemyField[y][x] == shipTest) {
-        cout << "попали" << endl;
+    else if (enemyField[y][x] == shipTest) {
         enemyField[y][x] = 'x';
         hitField[y][x] = 'x';
+        if (isKill(enemyField, hitField, x, y) == true) {
+            cout << "Убил" << endl;
+        }
+        else cout << "Ранил" << endl;
     }
-    else {
-        cout << "ошибка" << endl;
-    }
+    else if (enemyField[y][x] == 'o') cout << "Уже стреляли!" << endl;
+    else cout << "Палуба уже пробита" << endl;
+
 
 }
 
 void enemyTurn(char** field) {
     cout << "ход соперника" << endl;
+    int a;
+    cin >> a;
 }
 
 void game(char** field, char** enemyField, char** hitField) {
     int turn = 0;
-    if (turn % 2 == 0) {
-        myTurn(enemyField, hitField);
-        render(hitField);
-        render(field);
-        
-    }
-    else {
-        enemyTurn(field);
-        render(hitField);
-        render(field);
-        
+    while (true) {
+        if (turn % 2 == 0) {
+
+            myTurn(enemyField, hitField);
+            render(enemyField);
+            render(hitField);
+
+            render(field);
+
+            turn++;
+
+
+        }
+        else {
+
+            enemyTurn(field);
+            render(enemyField);
+            render(hitField);
+            render(field);
+            turn++;
+
+        }
     }
 }
 
@@ -318,7 +439,7 @@ int main()
     cout << "Начало!" << endl;
     render(hitField);
     render(field);
-    while (true) game(field, enemyField, hitField);
+    game(field, enemyField, hitField);
     cout << "END";
 
 
