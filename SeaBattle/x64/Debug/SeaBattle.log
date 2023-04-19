@@ -1,0 +1,4 @@
+﻿  SeaBattle.cpp
+C:\Users\Взрослая академия\Documents\Serg\SeaBattle\SeaBattle.cpp(161,10): warning C4101: let: неиспользованная локальная переменная
+C:\Users\Взрослая академия\Documents\Serg\SeaBattle\SeaBattle.cpp(309,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  SeaBattle.vcxproj -> C:\Users\Взрослая академия\Documents\Serg\SeaBattle\x64\Debug\SeaBattle.exe
