@@ -260,6 +260,47 @@ void startInit(char** field, char** enemyField, int* shipCount, int* enemyShipCo
     }
 }
 
+void myTurn(char** enemyField, char** hitField) {
+    int x, y;
+    char let;
+    cout << "Введите координаты выстрела ( буква и цифра ): ";
+    cin >> let >> y;
+    x = int(let) - 65;
+    y--;
+    if (enemyField[y][x] == '~') {
+        enemyField[y][x] = 'o';
+        hitField[y][x] = 'o';
+    }
+    else if(enemyField[y][x] == shipTest) {
+        cout << "попали" << endl;
+        enemyField[y][x] = 'x';
+        hitField[y][x] = 'x';
+    }
+    else {
+        cout << "ошибка" << endl;
+    }
+
+}
+
+void enemyTurn(char** field) {
+    cout << "ход соперника" << endl;
+}
+
+void game(char** field, char** enemyField, char** hitField) {
+    int turn = 0;
+    if (turn % 2 == 0) {
+        myTurn(enemyField, hitField);
+        render(hitField);
+        render(field);
+        
+    }
+    else {
+        enemyTurn(field);
+        render(hitField);
+        render(field);
+        
+    }
+}
 
 
 
@@ -271,8 +312,13 @@ int main()
     int* enemyShipCount = new int[4] { 1, 2, 3, 4 };
     char** field = createField();
     char** enemyField = createField();
+    char** hitField = createField();
     render(field);
     startInit(field, enemyField, shipCount, enemyShipCount);
+    cout << "Начало!" << endl;
+    render(hitField);
+    render(field);
+    while (true) game(field, enemyField, hitField);
     cout << "END";
 
 
