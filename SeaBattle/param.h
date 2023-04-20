@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <string>
+#include <windows.h>
 #define random(min, max) min + rand() % (max + 1 - min)
 using namespace std;
 

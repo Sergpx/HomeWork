@@ -260,7 +260,7 @@ void startInit(char** field, char** enemyField, int* shipCount, int* enemyShipCo
     }
 }
 // Проверка на убийство.
-bool isKill(char** enemyField, char** hitField, int x, int y) {
+bool isKill(char** enemyField, int x, int y) {
     int decks = 1;
     int minX = x;
     int minY = y;
@@ -331,7 +331,7 @@ bool isKill(char** enemyField, char** hitField, int x, int y) {
 
                     if (enemyField[y0][x0] != 'x') {
                         enemyField[y0][x0] = 'o';
-                        hitField[y0][x0] = 'o';
+                        // hitField[y0][x0] = 'o'; добавить перерисовку поля из enemyField in hitField
                     }
                 }
             }
@@ -352,7 +352,6 @@ bool isKill(char** enemyField, char** hitField, int x, int y) {
                     if (y0 < 0 || x0 < 0 || y0 >= FIELD_SIZE || x0 >= FIELD_SIZE) continue;
                     if (enemyField[y0][x0] != 'x') {
                         enemyField[y0][x0] = 'o';
-                        hitField[y0][x0] = 'o';
                     }
                 }
             }
@@ -364,7 +363,7 @@ bool isKill(char** enemyField, char** hitField, int x, int y) {
 }
 
 // Проверка попадания. Убил, ранил, промазал.
-void myTurn(char** enemyField, char** hitField) {
+bool myTurn(char** enemyField, char** hitField) {
     int x, y;
     char let;
     cout << "Введите координаты выстрела ( буква и цифра ): ";
@@ -375,53 +374,536 @@ void myTurn(char** enemyField, char** hitField) {
         enemyField[y][x] = 'o';
         hitField[y][x] = 'o';
         cout << "Промах" << endl;
+        return false;
     }
     else if (enemyField[y][x] == shipTest) {
         enemyField[y][x] = 'x';
         hitField[y][x] = 'x';
-        if (isKill(enemyField, hitField, x, y) == true) {
+        if (isKill(enemyField, x, y) == true) {
             cout << "Убил" << endl;
+            return true;
         }
-        else cout << "Ранил" << endl;
+        else { 
+            cout << "Ранил" << endl;
+            return true;
+        }
     }
-    else if (enemyField[y][x] == 'o') cout << "Уже стреляли!" << endl;
-    else cout << "Палуба уже пробита" << endl;
+    else if (enemyField[y][x] == 'o') cout << "Уже стреляли!" << endl; // скорее всего не нужно
+    else cout << "Палуба уже пробита" << endl; // скорее всего не нужно
 
 
 }
+// проверка право - лево
+int checkRightLeft(char** field, int &lastX, int &lastY, char &lastDirection) {
+    // проверка вправо
+    for (int x0 = lastX + 1; x0 <= lastX + 3; x0++) {
+        if (x0 < 0 || x0 >= FIELD_SIZE || field[lastY][x0] == 'o') break;
+        else if (field[lastY][x0] == '~') {
+            field[lastY][x0] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[lastY][x0] == shipTest) {
+            field[lastY][x0] = 'x';
+            if (isKill(field, x0, lastY)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'G';
+                return 1;
+            }
+        }
+    }
+    // проверка влево
+    for (int x0 = lastX - 1; x0 >= lastX - 3; x0--) {
+        if (x0 < 0 || x0 >= FIELD_SIZE || field[lastY][x0] == 'o') break;
+        else if (field[lastY][x0] == '~') {
+            field[lastY][x0] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[lastY][x0] == shipTest) {
+            field[lastY][x0] = 'x';
+            if (isKill(field, x0, lastY)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'G';
+                return 1;
+            }
+        }
+    }
+    return 2;
+}
+// проверка лево - право
+int checkLeftRight(char** field, int& lastX, int& lastY, char &lastDirection) {
+    
+    // проверка влево
+    for (int x0 = lastX - 1; x0 >= lastX - 3; x0--) {
+        if (x0 < 0 || x0 >= FIELD_SIZE || field[lastY][x0] == 'o') break;
+        else if (field[lastY][x0] == '~') {
+            field[lastY][x0] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[lastY][x0] == shipTest) {
+            field[lastY][x0] = 'x';
+            if (isKill(field, x0, lastY)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'G';
+                return 1;
+            }
+        }
+    }
+    // проверка вправо
+    for (int x0 = lastX + 1; x0 <= lastX + 3; x0++) {
+        if (x0 < 0 || x0 >= FIELD_SIZE || field[lastY][x0] == 'o') break;
+        else if (field[lastY][x0] == '~') {
+            field[lastY][x0] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[lastY][x0] == shipTest) {
+            field[lastY][x0] = 'x';
+            if (isKill(field, x0, lastY)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'G';
+                return 1;
+            }
+        }
+    }
+    return 2;
+}
+// проверка верх - низ
+int checkTopDown(char** field, int &lastX, int &lastY, char &lastDirection) {
+    //проверка вверх
+    for (int y0 = lastY - 1; y0 >= lastY - 3; y0--) {
+        if (y0 < 0 || y0 >= FIELD_SIZE || field[y0][lastX] == 'o') break;
+        else if (field[y0][lastX] == '~') {
+            field[y0][lastX] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[y0][lastX] == shipTest) {
+            field[y0][lastX] = 'x';
+            if (isKill(field, lastX, y0)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'V';
+                return 1;
+            }
+        }
+    }
+    // проверка вниз
+    for (int y0 = lastY + 1; y0 <= lastY + 3; y0++) {
+        if (y0 < 0 || y0 >= FIELD_SIZE || field[y0][lastX] == 'o') break;
+        else if (field[y0][lastX] == '~') {
+            field[y0][lastX] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[y0][lastX] == shipTest) {
+            field[y0][lastX] = 'x';
+            if (isKill(field, lastX, y0)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'V';
+                return 1;
+            }
+        }
+    }
+    return 2;
+}
+// проверка низ - верх
+int checkDownTop(char** field, int& lastX, int& lastY, char &lastDirection) {
+    // проверка вниз
+    for (int y0 = lastY + 1; y0 <= lastY + 3; y0++) {
+        if (y0 < 0 || y0 >= FIELD_SIZE || field[y0][lastX] == 'o') break;
+        else if (field[y0][lastX] == '~') {
+            field[y0][lastX] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[y0][lastX] == shipTest) {
+            field[y0][lastX] = 'x';
+            if (isKill(field, lastX, y0)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'V';
+                return 1;
+            }
+        }
+    }
+    //проверка вверх
+    for (int y0 = lastY - 1; y0 >= lastY - 3; y0--) {
+        if (y0 < 0 || y0 >= FIELD_SIZE || field[y0][lastX] == 'o') break;
+        else if (field[y0][lastX] == '~') {
+            field[y0][lastX] = 'o';
+            cout << "соперник промазал" << endl;
+            return 0;
+        }
+        else if (field[y0][lastX] == shipTest) {
+            field[y0][lastX] = 'x';
+            if (isKill(field, lastX, y0)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                lastX = -1;
+                lastY = -1;
+                lastDirection = NULL;
+                return 1;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastDirection = 'V';
+                return 1;
+            }
+        }
+    }
+    return 2;
+}
 
-void enemyTurn(char** field) {
+
+
+// 1. вправо -> вверх
+bool optionRightTop(char** field, int &lastX, int& lastY, char &lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkRightLeft(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkTopDown(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+// 2. вверх -> вправо
+bool optionTopRight(char** field, int& lastX, int& lastY, char& lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkTopDown(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkRightLeft(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+// 3. влево -> вверх
+bool optionLeftTop(char** field, int& lastX, int& lastY, char& lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkLeftRight(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkTopDown(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+// 4. вверх -> влево
+bool optionTopLeft(char** field, int& lastX, int& lastY, char& lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkTopDown(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkLeftRight(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+// 5. влево -> вниз
+bool optionLeftDown(char** field, int& lastX, int& lastY, char& lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkLeftRight(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkDownTop(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+// 6. вниз -> влево
+bool optionDownLeft(char** field, int& lastX, int& lastY, char& lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkDownTop(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkLeftRight(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+// 7. право -> вниз
+bool optionRightDown(char** field, int& lastX, int& lastY, char& lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkRightLeft(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkDownTop(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+// 8. вниз -> вправо
+bool optionDownRight(char** field, int& lastX, int& lastY, char& lastDirection) {
+    int isHitX;
+    int isHitY;
+    isHitX = checkDownTop(field, lastX, lastY, lastDirection);
+    if (isHitX == 2) {
+        isHitY = checkRightLeft(field, lastX, lastY, lastDirection);
+        if (isHitY == 1) {
+            return true;
+        }
+        else if (isHitY == 0) return false;
+    }
+    else if (isHitX == 1) {
+        return true;
+    }
+    else if (isHitX == 0) return false;
+}
+
+
+
+
+bool enemyTurn(char** field , int &lastY, int &lastX, char &lastDirection) {
     cout << "ход соперника" << endl;
-    int a;
-    cin >> a;
+    int x;
+    int y;
+    int rnd;
+    int test;
+    cout << "LastDirection - " << lastDirection << endl;
+    if (lastY != -1 && lastX != -1) {
+        if (lastDirection == 'G') {
+            rnd = random(1, 2);
+            Sleep(1000);
+            switch (rnd) {
+            case 1:
+                cout << "VAR G1" << endl;
+                return optionRightTop(field, lastX, lastY, lastDirection);
+                break;
+            case 2:
+                cout << "VAR G2" << endl;
+                return optionLeftTop(field, lastX, lastY, lastDirection);
+                break;
+            }
+        }
+        else if (lastDirection == 'V') {
+            rnd = random(1, 2);
+            Sleep(1000);
+            switch (rnd) {
+            case 1:
+                cout << "VAR V1" << endl;
+                return optionTopRight(field, lastX, lastY, lastDirection);
+                break;
+            case 2:
+                cout << "VAR V2" << endl;
+                return optionDownLeft(field, lastX, lastY, lastDirection);
+                break;
+            }
+        }
+        else {
+            rnd = random(1, 8);
+            Sleep(1000);
+            switch(rnd) {
+                case 1:
+                    cout << "VAR R1" << endl;
+                    return optionRightTop(field, lastX, lastY, lastDirection);
+                    break;
+                case 2:
+                    cout << "VAR R2" << endl;
+                    return optionTopRight(field, lastX, lastY, lastDirection);
+                    break;
+                case 3:
+                    cout << "VAR R3" << endl;
+                    return optionLeftTop(field, lastX, lastY, lastDirection);
+                    break;
+                case 4:
+                    cout << "VAR R4" << endl;
+                    return optionTopLeft(field, lastX, lastY, lastDirection);
+                    break;
+                case 5:
+                    cout << "VAR R5" << endl;
+                    return optionLeftDown(field, lastX, lastY, lastDirection);
+                    break;
+                case 6:
+                    cout << "VAR R6" << endl;
+                    return optionDownLeft(field, lastX, lastY, lastDirection);
+                    break;
+                case 7:
+                    cout << "VAR R7" << endl;
+                    return optionRightDown(field, lastX, lastY, lastDirection);
+                    break;
+                case 8:
+                    cout << "VAR R8" << endl;
+                    return optionDownRight(field, lastX, lastY, lastDirection);
+                    break;
+            }
+            
+        }
+    }
+    else {
+        //x = random(0, FIELD_SIZE - 1);
+        //y = random(0, FIELD_SIZE - 1);
+        char let;
+        cout << "Введите координаты выстрела для врага: ";
+        cin >> let >> y;
+        x = int(let) - 65;
+        y--;
+        if (field[y][x] == '~') {
+            field[y][x] = 'o';
+            cout << "Соперник промахнулся" << endl;
+            return false;
+        }
+        else if (field[y][x] == shipTest) {
+            field[y][x] = 'x';
+            if (isKill(field, x, y)) {
+                cout << "Враг потопил ваш корабль" << endl;
+                return true;
+            }
+            else {
+                cout << "Враг попал в ваш корабль." << endl;
+                lastX = x;
+                lastY = y;
+                return true;
+            }
+        }
+        else if (field[y][x] == 'o') {
+            cout << "Уже стреляли!" << endl;
+            return true;
+        }
+        else {
+            cout << "Палуба уже пробита" << endl; 
+            return true;
+        }
+    }
 }
 
 void game(char** field, char** enemyField, char** hitField) {
     int turn = 0;
+    int lastX = -1;
+    int lastY = -1;
+    char lastDirection = NULL; // V or G
+    bool isHit;
     while (true) {
         if (turn % 2 == 0) {
+            do { 
+                
+                system("cls");
+                render(field);
+                isHit = myTurn(enemyField, hitField); 
+                //render(enemyField);
+                //render(hitField);
+                
+            } while (isHit == true);
 
-            myTurn(enemyField, hitField);
-            render(enemyField);
-            render(hitField);
-
-            render(field);
-
+            
             turn++;
 
 
         }
         else {
-
-            enemyTurn(field);
-            render(enemyField);
-            render(hitField);
-            render(field);
+            do {
+                
+                system("cls");
+                render(field);
+                isHit = enemyTurn(field, lastX, lastY, lastDirection);
+               // render(enemyField);
+                //render(hitField);
+                
+            } while (isHit == true);
             turn++;
 
         }
     }
 }
+
 
 
 
