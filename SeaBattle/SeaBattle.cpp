@@ -44,7 +44,7 @@ void setGorizontal(char** field, int x, int y, int deck) {
     for (int x0 = x; x0 < x + deck; x0++) {
         field[y][x0] = SHIP;
     }
-    render(field);
+    //render(field);
 }
 
 bool isCanSetVertical(char** field, int x, int y, int deck) {
@@ -77,7 +77,7 @@ void setVertical(char** field, int x, int y, int deck) {
     for (int y0 = y; y0 > y - deck; y0--) {
         field[y0][x] = SHIP;
     }
-    render(field);
+    //render(field);
 }
 
 bool isCanSetShip(int*& SHIPCount, int deck) {
@@ -148,7 +148,8 @@ void setShips(char** field) {
         } while (true);
         // вкл/выкл
         cout << endl << "1-а палубный " << SHIPCount[3] << " | 2-х палубный: " << SHIPCount[2] << " | 3-х палубный: " << SHIPCount[1] << " | 4-х палубный: " << SHIPCount[0] << endl;
-
+        system("cls");
+        render(field);
     }
 }
 
@@ -371,20 +372,20 @@ int checkRightLeft(char** field, int &lastX, int &lastY, char &lastDirection) {
         if (x0 < 0 || x0 >= FIELD_SIZE || field[lastY][x0] == MISS) break;
         else if (field[lastY][x0] == SEA) {
             field[lastY][x0] = MISS;
-            cout << "соперник промазал" << endl;
+            cout << "Противник не попал" << endl;
             return 0;
         }
         else if (field[lastY][x0] == SHIP) {
             field[lastY][x0] = HIT;
             if (isKill(field, x0, lastY)) {
-                cout << "Враг потопил ваш корабль" << endl;
+                cout << "Противник потопил ваш корабль" << endl;
                 lastX = -1;
                 lastY = -1;
                 lastDirection = NULL;
                 return 1;
             }
             else {
-                cout << "Враг попал в ваш корабль." << endl;
+                cout << "Противник попал в ваш корабль." << endl;
                 lastDirection = 'G';
                 return 1;
             }
@@ -424,20 +425,20 @@ int checkLeftRight(char** field, int& lastX, int& lastY, char &lastDirection) {
         if (x0 < 0 || x0 >= FIELD_SIZE || field[lastY][x0] == MISS) break;
         else if (field[lastY][x0] == SEA) {
             field[lastY][x0] = MISS;
-            cout << "соперник промазал" << endl;
+            cout << "Противник не попал" << endl;
             return 0;
         }
         else if (field[lastY][x0] == SHIP) {
             field[lastY][x0] = HIT;
             if (isKill(field, x0, lastY)) {
-                cout << "Враг потопил ваш корабль" << endl;
+                cout << "Противник потопил ваш корабль" << endl;
                 lastX = -1;
                 lastY = -1;
                 lastDirection = NULL;
                 return 1;
             }
             else {
-                cout << "Враг попал в ваш корабль." << endl;
+                cout << "Противник попал в ваш корабль." << endl;
                 lastDirection = 'G';
                 return 1;
             }
@@ -476,20 +477,20 @@ int checkTopDown(char** field, int &lastX, int &lastY, char &lastDirection) {
         if (y0 < 0 || y0 >= FIELD_SIZE || field[y0][lastX] == MISS) break;
         else if (field[y0][lastX] == SEA) {
             field[y0][lastX] = MISS;
-            cout << "соперник промазал" << endl;
+            cout << "Противник не попал" << endl;
             return 0;
         }
         else if (field[y0][lastX] == SHIP) {
             field[y0][lastX] = HIT;
             if (isKill(field, lastX, y0)) {
-                cout << "Враг потопил ваш корабль" << endl;
+                cout << "Противник потопил ваш корабль" << endl;
                 lastX = -1;
                 lastY = -1;
                 lastDirection = NULL;
                 return 1;
             }
             else {
-                cout << "Враг попал в ваш корабль." << endl;
+                cout << "Противник попал в ваш корабль." << endl;
                 lastDirection = 'V';
                 return 1;
             }
@@ -528,20 +529,20 @@ int checkDownTop(char** field, int& lastX, int& lastY, char &lastDirection) {
         if (y0 < 0 || y0 >= FIELD_SIZE || field[y0][lastX] == MISS) break;
         else if (field[y0][lastX] == SEA) {
             field[y0][lastX] = MISS;
-            cout << "соперник промазал" << endl;
+            cout << "Противник не попал" << endl;
             return 0;
         }
         else if (field[y0][lastX] == SHIP) {
             field[y0][lastX] = HIT;
             if (isKill(field, lastX, y0)) {
-                cout << "Враг потопил ваш корабль" << endl;
+                cout << "Противник потопил ваш корабль" << endl;
                 lastX = -1;
                 lastY = -1;
                 lastDirection = NULL;
                 return 1;
             }
             else {
-                cout << "Враг попал в ваш корабль." << endl;
+                cout << "Противник попал в ваш корабль." << endl;
                 lastDirection = 'V';
                 return 1;
             }
@@ -780,7 +781,7 @@ bool enemyTurn(char** field , int &lastY, int &lastX, char &lastDirection, char*
         }
     }
     else {
-        system("cls");
+       // system("cls");
         cout << "Ход противника" << endl;
         do {
             x = random(0, FIELD_SIZE - 1);
@@ -796,19 +797,19 @@ bool enemyTurn(char** field , int &lastY, int &lastX, char &lastDirection, char*
 
         if (field[y][x] == SEA) {
             field[y][x] = MISS;
-            totalRender(field, enemyField, hitField);
+            //totalRender(field, enemyField, hitField);
             cout << "Противник промахнулся" << endl;
             return false;
         }
         else if (field[y][x] == SHIP) {
             field[y][x] = HIT;
             if (isKill(field, x, y)) {
-                totalRender(field, enemyField, hitField);
+                //totalRender(field, enemyField, hitField);
                 cout << "Противник потопил ваш корабль" << endl;
                 return true;
             }
             else {
-                totalRender(field, enemyField, hitField);
+                //totalRender(field, enemyField, hitField);
                 cout << "Противник попал в ваш корабль." << endl;
                 lastX = x;
                 lastY = y;
@@ -822,6 +823,8 @@ bool enemyTurn(char** field , int &lastY, int &lastX, char &lastDirection, char*
 bool myTurn(char** field, char** &enemyField, char** &hitField) {
     int x, y;
     char let;
+    system("cls");
+    totalRender(field, enemyField, hitField);
     do {
         cout << "Введите координаты выстрела ( буква и цифра ): ";
         cin >> let >> y;
@@ -833,23 +836,23 @@ bool myTurn(char** field, char** &enemyField, char** &hitField) {
 
     } while (isCanHit(enemyField, x, y));
 
-    system("cls");
+   system("cls");
 
     if (enemyField[y][x] == SEA) {
         enemyField[y][x] = MISS;
-        totalRender(field, enemyField, hitField);
+        //totalRender(field, enemyField, hitField);
         cout << "Промах" << endl;
         return false;
     }
     else if (enemyField[y][x] == SHIP) {
         enemyField[y][x] = HIT;
         if (isKill(enemyField, x, y) == true) {
-            totalRender(field, enemyField, hitField);
+            //totalRender(field, enemyField, hitField);
             cout << "Убил" << endl;
             return true;
         }
         else {
-            totalRender(field, enemyField, hitField);
+            //totalRender(field, enemyField, hitField);
             cout << "Ранил" << endl;
             return true;
         }
@@ -879,6 +882,9 @@ void game(char** field, char** enemyField, char** hitField) {
     int lastY = -1;
     char lastDirection = NULL; // V or G
     bool isHit;
+    
+    totalRender(field, enemyField, hitField);
+    system("cls");
     while (myCount != 20 && enemyCount != 20) {
         // мой ход
         if (turn % 2 == 0) {
@@ -888,7 +894,12 @@ void game(char** field, char** enemyField, char** hitField) {
                 //render(hitField);
                 //render(field);
                 //cout << "MyCount - " << myCount << endl;
+                //totalRender(field, enemyField, hitField);
+                
                 isHit = myTurn(field, enemyField, hitField);
+                
+                totalRender(field, enemyField, hitField);
+                
                 if (isHit) myCount++;
                 if (myCount == 20) break;
                 Sleep(TIME);
@@ -905,7 +916,10 @@ void game(char** field, char** enemyField, char** hitField) {
                 render(hitField);
                 render(field); */
                 //cout << "EnemyCount - " << enemyCount << endl;
+                //totalRender(field, enemyField, hitField);
+                system("cls");
                 isHit = enemyTurn(field, lastX, lastY, lastDirection , enemyField, hitField);
+                totalRender(field, enemyField, hitField);
                 if (isHit) enemyCount++;
                 if (enemyCount == 20) break;
                 Sleep(TIME);
@@ -941,10 +955,7 @@ int main()
         hitField = createField();
         render(field);
         startInit(field, enemyField);
-        system("cls");
-        render(hitField);
-        render(field);
-        cout << "Начало!" << endl;
+        
 
         game(field, enemyField, hitField);
         system("cls");

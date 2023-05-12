@@ -1,4 +1,16 @@
 ﻿  SeaBattle.cpp
-C:\Users\Взрослая академия\Documents\Serg\SeaBattle\SeaBattle.cpp(161,10): warning C4101: let: неиспользованная локальная переменная
-C:\Users\Взрослая академия\Documents\Serg\SeaBattle\SeaBattle.cpp(309,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
-  SeaBattle.vcxproj -> C:\Users\Взрослая академия\Documents\Serg\SeaBattle\x64\Debug\SeaBattle.exe
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(158,10): warning C4101: let: неиспользованная локальная переменная
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(715,9): warning C4101: test: неиспользованная локальная переменная
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(925,15): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(589): warning C4715: optionTopRight: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(607): warning C4715: optionLeftTop: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(625): warning C4715: optionTopLeft: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(571): warning C4715: optionRightTop: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(643): warning C4715: optionLeftDown: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(661): warning C4715: optionDownLeft: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(679): warning C4715: optionRightDown: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(697): warning C4715: optionDownRight: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(859): warning C4715: myTurn: значение возвращается не при всех путях выполнения
+C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\SeaBattle.cpp(819): warning C4715: enemyTurn: значение возвращается не при всех путях выполнения
+  LINK : не найден или не выполнена сборка C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\x64\Debug\SeaBattle.exe при последней инкрементной компоновке; выполняется полная компоновка
+  SeaBattle.vcxproj -> C:\Users\Взрослая академия\Desktop\test2\HomeWork\SeaBattle\x64\Debug\SeaBattle.exe
