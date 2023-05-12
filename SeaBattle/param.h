@@ -27,12 +27,13 @@ void setVertical(char** field, int x, int y, int deck);
 
 bool isCanSetShip(int*& SHIPCount, int deck);
 
-void setShips(char** field, int* SHIPCount);
-void setRandomShips(char** field, int* SHIPCount);
+void setShips(char** field);
+void setRandomShips(char** field);
 
 void render(char** field);
+void totalRender(char** field, char** &enemyField, char** &hitField);
 
-void startInit(char** field, char** enemyField, int* SHIPCount, int* enemyShipCount);
+void startInit(char** field, char** enemyField);
 
 bool isKill(char** enemyField, int x, int y);
 
@@ -52,9 +53,9 @@ bool optionDownRight(char** field, int& lastX, int& lastY, char& lastDirection);
 
 bool isCanHit(char** anyField, int x, int y);
 
-bool enemyTurn(char** field, int& lastY, int& lastX, char& lastDirection);
-bool myTurn(char** enemyField);
+bool enemyTurn(char** field, int& lastY, int& lastX, char& lastDirection, char** &enemyField, char** &hitField);
+bool myTurn(char** field, char** &enemyField, char** &hitField);
 
-void copyField(char** enemyField, char** hitField);
+void copyField(char** &enemyField, char** &hitField);
 
 void game(char** field, char** enemyField, char** hitField);
